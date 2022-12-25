@@ -1,0 +1,45 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+h1{
+  text-align: center;
+  padding: 1rem;
+  background-color: blanchedalmond;
+}
+ul{
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+}
+li{
+  margin: 1rem;
+  padding: 0.5rem;
+  background-color: aquamarine;
+  cursor:pointer;
+}
+.all-cards{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  max-width: 1150px;
+  margin: 0 auto;
+}
+.card{
+  display: flex;
+  flex: 0 1 40%;
+  margin-bottom: 1rem;
+}
+.card img{
+  margin-right: 0.5rem;
+}
+span{
+  font-weight: bold;
+}
+.top-sec{
+  display: flex;
+  justify-content: space-between;
+}
+p{
+  padding: 0.5rem 0 0 0.5rem;
+}
