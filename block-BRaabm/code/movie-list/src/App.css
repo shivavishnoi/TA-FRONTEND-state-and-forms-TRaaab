@@ -1,0 +1,45 @@
+
+.card{
+  border: 1px solid blueviolet;
+  /* flex: 0 1 50%; */
+  text-align: center;
+  margin: 0.8rem 0;
+}
+.App{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+   position: relative;
+}
+span{
+  display: block;
+}
+button{
+  padding:  0.5rem;
+}
+button{
+  margin-left: 36%;
+  cursor: pointer;
+}
+.modal{
+  border: 1px solid green;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+  left: 0px;
+  height: 99vh;
+  z-index: 12;
+  background-color: rgb(199, 227, 227);
+}
+.modal-top{
+  display: flex;
+  justify-content: space-between
+}
+.modal span{
+  padding: 1rem;
+  cursor: pointer;
+}
+header{
+  text-align: center;
+  padding: 1rem;
+}
