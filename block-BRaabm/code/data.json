@@ -68,6 +68,7 @@
     "Actors": "Gerard Butler, Lena Headey, Dominic West, David Wenham",
     "Plot": "King Leonidas of Sparta and a force of 300 men fight the Persians at Thermopylae in 480 B.C.",
     "Language": "English",
+    "Language": "English",
     "Country": "USA",
     "Awards": "16 wins & 42 nominations.",
     "Poster": "http://ia.media-imdb.com/images/M/MV5BMjAzNTkzNjcxNl5BMl5BanBnXkFtZTYwNDA4NjE3._V1_SX300.jpg",
@@ -232,7 +233,7 @@
   },
   {
     "Title": "Gotham",
-    "Year": "2014–",
+    "Year": "2014",
     "Rated": "TV-14",
     "Released": "01 Aug 2014",
     "Runtime": "42 min",
@@ -440,7 +441,7 @@
   {
     "ComingSoon": true,
     "Title": "Luke Cage",
-    "Year": "2016–",
+    "Year": "2016",
     "Rated": "TV-MA",
     "Released": "30 Sep 2016",
     "Runtime": "55 min",
