@@ -1,0 +1,12 @@
+input, span, label{
+  display: block;
+}
+div{
+  margin-bottom: 0.5rem;
+}
+form{
+  min-width: 500px;
+}
+.error{
+  border: 1px solid red;
+}
