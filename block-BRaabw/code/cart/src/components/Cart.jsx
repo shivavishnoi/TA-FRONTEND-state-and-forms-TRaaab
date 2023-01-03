@@ -1,74 +1,104 @@
-function Cart(props) {
-  if (props.details.length == 0) {
-    return null;
-  }
-  return (
-    <>
-      <div className={`${props.status ? 'cart' : 'hidden cart'}`}>
-        <div className="cart-head">
-          <div className="cart-close" onClick={props.handleCart}>
-            ❌
-          </div>
+import React from 'react';
+import CartItem from './CartItem';
 
-          <div>
-            <img src="/static/bag-icon.png" className="cart-logo-in" />
-            <span>Cart</span>
-          </div>
-          <div></div>
+class Cart extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpen: false,
+    };
+  }
+  close = () => {
+    this.setState({ isOpen: false });
+  };
+  open = () => {
+    this.setState({ isOpen: true });
+  };
+  render() {
+    let totalItems = this.props.cartItems.reduce((acc, cv) => {
+      acc = acc + cv.quantity;
+      return acc;
+    }, 0);
+    let totalAmount = this.props.cartItems.reduce((acc, cv) => {
+      acc = acc + cv.price * cv.quantity;
+      return acc;
+    }, 0);
+    const { isOpen } = this.state;
+    if (!isOpen) {
+      return <ClosedCart open={this.open} totalItems={totalItems} />;
+    }
+    return (
+      <aside className="cart">
+        <div onClick={this.close} className="close-btn">
+          X
         </div>
-        <hr />
-        <div className="cart-items">
-          {props.details.map((elm, i) => {
-            return (
-              <>
-                <div className="item-row">
-                  <img
-                    src={`/static/products/${elm.sku}_2.jpg`}
-                    className="cart-item-img"
-                  />
-                  <div className="item-description">
-                    <span>{elm.title}</span>
-                    <br />
-                    <span>{elm.description}</span>
-                    <br />
-                    <span>Quantity- 1</span>
-                  </div>
-                  <div>${elm.price}&nbsp;</div>
-                  <div
-                    className="remove-item"
-                    onClick={(e) => props.removeItem(e, i)}
-                  >
-                    ❌
-                  </div>
-                </div>
-                <hr />
-              </>
-            );
-          })}
-        </div>
-        <div className="checkout-area">
-          <div className="subtotal">
-            <div>SUBTOTAL</div>
-            <div>
-              $
-              {Math.ceil(
-                props.details.reduce((acc, cv) => {
-                  acc += cv.price;
-                  return acc;
-                }, 0)
-              )}
+        <div className="cart-body">
+          <div className="cart-heading">
+            <div className="cart-icon">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="icon"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              <span className="item-count">{totalItems}</span>
             </div>
+            <h2>Cart</h2>
           </div>
-          <button className="checkout">Checkout</button>
+          {this.props.cartItems.map((item) => (
+            <CartItem
+              {...item}
+              incrementQuantity={this.props.incrementQuantity}
+              decrementQuantity={this.props.decrementQuantity}
+              deleteItem={this.props.deleteItem}
+            />
+          ))}
+
+          <div className="cart-checkout">
+            <div>
+              <p>SUBTOTAL</p>
+              <p>{'$' + totalAmount}</p>
+            </div>
+            <button>CHECKOUT</button>
+          </div>
         </div>
-      </div>
-    </>
+      </aside>
+    );
+  }
+}
+
+function ClosedCart(props) {
+  return (
+    <div className="close-cart">
+      <span onClick={props.open} className="open-btn">
+        <div className="cart-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            className="icon"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          <span className="item-count">{props.totalItems}</span>
+        </div>
+      </span>
+    </div>
   );
 }
 
 export default Cart;
-//  {
-//    props.details.map((elm, i) => {
-//      return <h3>{elm.title}</h3>;
-//    });
-//  }

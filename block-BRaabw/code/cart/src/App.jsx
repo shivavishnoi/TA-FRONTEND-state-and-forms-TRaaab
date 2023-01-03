@@ -1,112 +1,115 @@
 import React from 'react';
-import data from './data.json';
-import Card from './components/Card';
-import Cart from './components/Cart';
-import './App.css';
+import Cart from '../src/components/Cart';
+import Main from '../src/components/Main';
+import Sidebar from '../src/components/Sidebar';
+import { products } from '../src/data.json';
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {
-      order: null,
-      activeSize: '',
-      cartStatus: false,
-      cart: {
-        items: [],
-      },
+      selectedSizes: [],
+      cartItems: [],
     };
+    this.eventId = null;
   }
-  handleSize = (e) => {
-    this.setState({ activeSize: e.target.innerText });
-  };
-  handleOrder = (e) => {
-    this.setState({ order: e.target.value });
-  };
-  handleAddToCart = (e, product) => {
-    let cart = this.state.cart.items;
-    cart.push(product);
-    this.setState({
-      cartStatus: true,
-      cart: {
-        items: cart,
-      },
-    });
-  };
-  handleCart = (e) => {
-    this.setState({ cartStatus: !this.state.cartStatus });
-  };
-  removeItem = (e, i) => {
-    this.state.cart.items.splice(i, 1);
-    this.setState({
-      cart: {
-        items: this.state.cart.items,
-      },
-    });
-  };
-  render() {
-    let products;
-    if (!this.state.activeSize) {
-      products = data.products;
-    } else {
-      products = data.products.filter((elm, i) => {
-        if (elm.availableSizes.includes(this.state.activeSize)) {
-          return true;
-        }
+  componentDidMount() {
+    if (localStorage.carts) {
+      this.setState({
+        cartItems: JSON.parse(localStorage.carts),
       });
     }
-
-    let sizes = data.products.reduce((acc, cv) => {
-      return [...new Set(acc.concat(cv.availableSizes))];
-    }, []);
-
+    this.eventId = window.addEventListener(
+      'beforeunload',
+      this.handleUpdateLocalStorage
+    );
+  }
+  componentWillUnmount() {
+    window.removeEventListener(this.eventId, null);
+  }
+  handleClick = (size) => {
+    if (this.state.selectedSizes.includes(size)) {
+      this.setState((prevState) => ({
+        selectedSizes: prevState.selectedSizes.filter((s) => s != size),
+      }));
+    } else {
+      this.setState((prevState) => ({
+        selectedSizes: prevState.selectedSizes.concat(size),
+      }));
+    }
+  };
+  handleAddToCart = (p) => {
+    let isPresent =
+      this.state.cartItems.findIndex((product) => product.id == p.id) !== -1;
+    if (isPresent) {
+      this.incrementQuantity(p.id);
+    } else {
+      this.setState((prevState) => ({
+        cartItems: prevState.cartItems.concat({ ...p, quantity: 1 }),
+      }));
+    }
+  };
+  incrementQuantity = (id) => {
+    this.setState((prevState) => {
+      let updatedCartItems = prevState.cartItems.map((p) => {
+        if (p.id == id) {
+          return {
+            ...p,
+            quantity: p.quantity + 1,
+          };
+        }
+        return p;
+      });
+      return { cartItems: updatedCartItems };
+    });
+  };
+  decrementQuantity = (id) => {
+    this.setState((prevState) => {
+      let updatedCartItems = prevState.cartItems.map((p) => {
+        if (p.id == id) {
+          return {
+            ...p,
+            quantity: p.quantity - 1,
+          };
+        }
+        return p;
+      });
+      return { cartItems: updatedCartItems };
+    });
+  };
+  deleteItem = (id) => {
+    this.setState((prevState) => {
+      let updatedCartItems = prevState.cartItems.filter((p) => {
+        return p.id !== id;
+      });
+      return { cartItems: updatedCartItems };
+    });
+  };
+  handleUpdateLocalStorage = () => {
+    localStorage.setItem('carts', JSON.stringify(this.state.cartItems));
+  };
+  render() {
     return (
-      <>
-        <div className="app">
-          <aside className="sizes">
-            {sizes.map((elm, i) => {
-              return (
-                <span key={i} className="size-circle" onClick={this.handleSize}>
-                  {elm}
-                </span>
-              );
-            })}
-          </aside>
-          <main className="products">
-            <Card details={products} handleAddToCart={this.handleAddToCart} />
-          </main>
-          <aside>
-            <div className="cart-logo" onClick={this.handleCart}>
-              <img src="/static/bag-icon.png" />
-              <h5>Check Your Cart</h5>
-            </div>
-            <div className="order">
-              <label htmlFor="order">Order By-</label>
-              <select name="order" id="order" onChange={this.handleOrder}>
-                <option value="">Select</option>
-                <option value="l2h">Lowest to Highest</option>
-                <option value="h2l">Highest to Lowest</option>
-              </select>
-            </div>
-          </aside>
-        </div>
-        <Cart
-          details={this.state.cart.items}
-          handleCart={this.handleCart}
-          status={this.state.cartStatus}
-          removeItem={this.removeItem}
+      <div className="wrapper flex space-between">
+        <Sidebar
+          products={products}
+          selectedSizes={this.state.selectedSizes}
+          handleClick={this.handleClick}
         />
-      </>
+        <Main
+          products={products}
+          selectedSizes={this.state.selectedSizes}
+          handleAddToCart={this.handleAddToCart}
+        />
+        <Cart
+          cartItems={this.state.cartItems}
+          incrementQuantity={this.incrementQuantity}
+          decrementQuantity={this.decrementQuantity}
+          deleteItem={this.deleteItem}
+        />
+      </div>
     );
   }
 }
 
 export default App;
-// order
-// switch (this.state.order) {
-//   case '':
-//     products = data.products;
-//     break;
-//   case 'l2h':
-//     products = [...data.products].sort((a, b) => a.price < b.price);
-//     break;
-// }
